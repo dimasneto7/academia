@@ -1,7 +1,9 @@
+import { Submenu } from '@/components/home/submenu/index'
+
 export default function Home() {
   return (
     <main>
-      <h1>teste página</h1>
+      <Submenu />
     </main>
   )
 }

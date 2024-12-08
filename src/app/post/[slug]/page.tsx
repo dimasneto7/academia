@@ -5,6 +5,47 @@ import { Hero } from '@/components/hero/index'
 import { Phone } from 'lucide-react'
 import { Container } from '@/components/container/index'
 import Image from 'next/image'
+import { Metadata } from 'next'
+
+export async function generateMetadata({
+  params: { slug },
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  try {
+    const { objects }: PostProps = await getItemBySlug(slug).catch(() => {
+      return {
+        title: 'Master Fit',
+        description: 'A melhor academia da região',
+      }
+    })
+
+    return {
+      title: `Master Fit - ${objects[0].title}`,
+      description: `${objects[0].metadata.description.text}`,
+      keywords: ['master fit', 'academia'],
+      openGraph: {
+        title: `Master Fit - ${objects[0].title}`,
+        images: [objects[0].metadata.banner.url],
+      },
+      robots: {
+        index: true,
+        follow: true,
+        nocache: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          noimageindex: true,
+        },
+      },
+    }
+  } catch (error) {
+    return {
+      title: 'Master Fit',
+      description: 'A melhor academia da região',
+    }
+  }
+}
 
 export default async function Page({
   params: { slug },
@@ -47,8 +88,10 @@ export default async function Page({
               className={styles.imageAbout}
               alt={objects[0].title}
               quality={100}
+              priority={true}
               fill={true}
               src={objects[0].metadata.description.banner.url}
+              sizes="(max-width: 480px) 100vw, (max-width: 1024px) 75vw, 60vw"
             />
           </div>
         </section>
